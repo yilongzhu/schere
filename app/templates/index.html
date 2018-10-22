@@ -1,5 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Welcome to Schere, the cross-device copy/paste app!<h1>
+<h1>Welcome to Schere, the cross-device copy/paste app!</h1>
+<table>
+    <tr>
+        <th>id</th>
+        <th>body</th>
+        <th>timestamp</th>
+    </tr>
+    {% for post in posts %}
+    <tr>
+        <td>{{ post.id }}</td>
+        <td>{{ post.body }}</td>
+        <td>{{ post.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<form method="POST">
+    <input text="text" name="body">
+    <input type="submit">
+</form>
 {% endblock %}

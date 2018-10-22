@@ -9,4 +9,8 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        return  '<Post at {}: \"{}\">'.format(self.id, self.body)
+        return  '<Post \'{}\'>'.format(self.body)
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
