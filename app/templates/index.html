@@ -1,23 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('user_connect', 'connected!');
+    });
+    socket.on('response', function(json) {
+        $('#log').append(JSON.stringify(json));
+        $('#shares tr:first').after(`<tr>
+                                <td>` + json.id + `</td>
+                                <td>` + json.body + `</td>
+                                <td>` + json.timestamp + `</td>
+                            </tr>`);
+    });
+    $('form#share').submit(function(event) {
+        socket.emit('new_share', $('#share_body').val());
+        document.getElementById('share_body').value = '';
+        return false;
+    });
+});
+</script>
 <h1>Welcome to Schere, the cross-device copy/paste app!</h1>
-<table>
+<form id="share" method="POST" autocomplete="off">
+    <input id="share_body" text="text" name="share_body" autofocus>
+    <input type="submit">
+</form>
+<table id="shares">
     <tr>
         <th>id</th>
         <th>body</th>
         <th>timestamp</th>
     </tr>
-    {% for post in posts %}
+    {% for share in shares %}
     <tr>
-        <td>{{ post.id }}</td>
-        <td>{{ post.body }}</td>
-        <td>{{ post.timestamp }}</td>
+        <td>{{ share.id }}</td>
+        <td>{{ share.body }}</td>
+        <td>{{ share.timestamp }}</td>
     </tr>
     {% endfor %}
 </table>
-<form method="POST">
-    <input text="text" name="body">
-    <input type="submit">
-</form>
+<div id="log"></div>
 {% endblock %}

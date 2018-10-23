@@ -15,3 +15,4 @@ It's frustrating to get links on your phone in mobile only apps. You get a link 
 * **marshmallow** for validating input data and serialization/deserialization
 * **webargs** for parsing HTTP request arguments
 * **Flask-Socket.IO** to use WebSocket connections
+* **Eventlet** for asynchronous services

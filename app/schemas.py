@@ -1,6 +1,9 @@
 from app import ma
-from app.models import Post
+from app.models import Share
 
-class PostSchema(ma.ModelSchema):
+class ShareSchema(ma.ModelSchema):
     class Meta:
-        model = Post
+        model = Share
+
+share_schema = ShareSchema()
+shares_schema = ShareSchema(many=True)
