@@ -28,4 +28,4 @@ def create_app(config_class=Config):
     return application
 
 
-from app import models
+from app import models, schemas, sockets

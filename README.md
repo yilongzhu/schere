@@ -8,7 +8,6 @@ It's frustrating to get links on your phone in mobile only apps. You get a link 
 
 
 ## Technologies Used
-* **nginx** for routing
 * **Flask** to build the API
 * **Flask-SQLAlchemy** as our ORM
 * **Flask-Migrate** for database migration

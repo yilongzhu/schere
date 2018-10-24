@@ -7,8 +7,9 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
     var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var room;
     socket.on('connect', function() {
-        socket.emit('user_connect', 'connected!');
+        socket.emit('user_connect');
     });
     socket.on('response', function(json) {
         $('#log').append(JSON.stringify(json));
@@ -18,16 +19,25 @@ $(document).ready(function(){
                                         <td>` + json.timestamp + `</td>
                                     </tr>`);
     });
+    $('form#user').submit(function(event) {
+        socket.emit('user_login', $('#user_id').val());
+        room = $('#user_id').val();
+        return false;
+    });
     $('form#share').submit(function(event) {
-        socket.emit('new_share', $('#share_body').val());
+        socket.emit('new_share', {user_id: room, share: $('#share_body').val()});
         document.getElementById('share_body').value = '';
         return false;
     });
 });
 </script>
 <h1>Welcome to Schere, the cross-device copy/paste app!</h1>
+<form id="user" method="POST" autocomplete="off">
+    <input id="user_id" type="text" name="user_id" placeholder="Username...">
+    <input type="submit">
+</form>
 <form id="share" method="POST" autocomplete="off">
-    <input id="share_body" text="text" name="share_body" autofocus>
+    <input id="share_body" type="text" name="share_body" autofocus placeholder="New share...">
     <input type="submit">
 </form>
 <table id="shares">
