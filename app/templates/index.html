@@ -13,10 +13,10 @@ $(document).ready(function(){
     socket.on('response', function(json) {
         $('#log').append(JSON.stringify(json));
         $('#shares tr:first').after(`<tr>
-                                <td>` + json.id + `</td>
-                                <td>` + json.body + `</td>
-                                <td>` + json.timestamp + `</td>
-                            </tr>`);
+                                        <td>` + json.id + `</td>
+                                        <td>` + json.body + `</td>
+                                        <td>` + json.timestamp + `</td>
+                                    </tr>`);
     });
     $('form#share').submit(function(event) {
         socket.emit('new_share', $('#share_body').val());

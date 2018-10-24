@@ -14,5 +14,4 @@ def get_share(id):
 @bp.route('/shares', methods=['GET'])
 def get_shares():
     shares = Share.query.all()
-    print(shares)
     return jsonify(shares_schema.dump(shares).data) 
