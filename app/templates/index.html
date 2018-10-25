@@ -11,13 +11,16 @@ $(document).ready(function(){
     socket.on('connect', function() {
         socket.emit('user_connect');
     });
-    socket.on('response', function(json) {
-        $('#log').append(JSON.stringify(json));
-        $('#shares tr:first').after(`<tr>
-                                        <td>` + json.id + `</td>
+    socket.on('added_share', function(json) {
+        //$('#log').append(JSON.stringify(json));
+        $('#shares').prepend(`<tr>
+                                        <td><button id="` + json.id + `" value="del">del</button></td>
                                         <td>` + json.body + `</td>
                                         <td>` + json.timestamp + `</td>
                                     </tr>`);
+    });
+    socket.on('deleted_share', function(post_id) {
+        document.getElementById('shares').removeChild(document.getElementById(post_id).parentElement.parentElement)
     });
     $('form#user').submit(function(event) {
         socket.emit('user_login', $('#user_id').val());
@@ -27,6 +30,14 @@ $(document).ready(function(){
     $('form#share').submit(function(event) {
         socket.emit('new_share', {user_id: room, share: $('#share_body').val()});
         document.getElementById('share_body').value = '';
+        return false;
+    });
+    $('button').on('click', function(event) {
+        socket.emit('delete_share', {user_id: room, post_id: this.id});
+        return false;
+    });
+    $('#shares').on('click', 'button', function(event) {
+        socket.emit('delete_share', {user_id: room, post_id: this.id});
         return false;
     });
 });
@@ -40,19 +51,23 @@ $(document).ready(function(){
     <input id="share_body" type="text" name="share_body" autofocus placeholder="New share...">
     <input type="submit">
 </form>
-<table id="shares">
-    <tr>
-        <th>id</th>
-        <th>body</th>
-        <th>timestamp</th>
-    </tr>
-    {% for share in shares %}
-    <tr>
-        <td>{{ share.id }}</td>
-        <td>{{ share.body }}</td>
-        <td>{{ share.timestamp }}</td>
-    </tr>
-    {% endfor %}
+<table>
+    <thead>
+        <tr>
+            <th>del</th>
+            <th>body</th>
+            <th>timestamp</th>
+        </tr>
+    </thead>
+    <tbody id="shares">
+        {% for share in shares %}
+        <tr>
+            <td><button id="{{ share.id }}" value="del">del</button></td>
+            <td>{{ share.body }}</td>
+            <td>{{ share.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 <div id="log"></div>
 {% endblock %}

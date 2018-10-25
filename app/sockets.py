@@ -21,4 +21,12 @@ def new_share(data):
     new_share = Share(body=data['share'])
     db.session.add(new_share)
     db.session.commit()
-    emit('response', share_schema.dump(new_share), json=True, room=data['user_id'])
+    emit('added_share', share_schema.dump(new_share), json=True, room=data['user_id'])
+
+
+@socketio.on('delete_share')
+def delete_share(data):
+    share = Share.query.filter_by(id=data['post_id']).first()
+    print('SocketIO: Deleted share \"' + share.body + '\"')
+    share.delete()
+    emit('deleted_share', data['post_id'], room=data['user_id'])
