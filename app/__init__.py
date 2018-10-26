@@ -24,6 +24,8 @@ def create_app(config_class=Config):
     application.register_blueprint(proto_bp, url_prefix='/proto')
     from app.api import bp as api_bp
     application.register_blueprint(api_bp, url_prefix='/api')
+    from app.auth import bp as auth_bp
+    application.register_blueprint(auth_bp)
 
     return application
 

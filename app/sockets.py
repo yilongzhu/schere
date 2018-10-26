@@ -12,21 +12,33 @@ def user_connect():
 @socketio.on('user_login')
 def user_login(user_id):
     join_room(user_id)
-    print('SocketIO: Joined room \"' + user_id + '\"')
+    print("SocketIO: Joined room \"" + user_id + "\"")
 
 
 @socketio.on('new_share')
 def new_share(data):
-    print('SocketIO: New share \"' + data['share'] + '\"')
-    new_share = Share(body=data['share'])
+    print("SocketIO: New share \"" + data['share'] + "\"")
+    new_share = Share(body=data['share'], user_id=data['user_id'])
     db.session.add(new_share)
     db.session.commit()
     emit('added_share', share_schema.dump(new_share), json=True, room=data['user_id'])
 
 
+@socketio.on('live_share')
+def live_share(data):
+    emit('live_share', data, json=True, room=data['user_id'])
+
+
+@socketio.on('update_share')
+def update_share(data):
+    share = Share.query.filter_by(id=data['post_id']).first()
+    share.update(data['body'])
+    print("SocketIO: Share updated \"" + data['body'] + "\"")
+
+
 @socketio.on('delete_share')
 def delete_share(data):
     share = Share.query.filter_by(id=data['post_id']).first()
-    print('SocketIO: Deleted share \"' + share.body + '\"')
+    print("SocketIO: Deleted share \"" + share.body + "\"")
     share.delete()
     emit('deleted_share', data['post_id'], room=data['user_id'])
