@@ -12,7 +12,7 @@ def user_connect():
 @socketio.on('user_login')
 def user_login(user_id):
     join_room(user_id)
-    print("SocketIO: Joined room \"" + user_id + "\"")
+    print("SocketIO: Joined room "  + user_id)
 
 
 @socketio.on('new_share')
@@ -22,11 +22,6 @@ def new_share(data):
     db.session.add(new_share)
     db.session.commit()
     emit('added_share', share_schema.dump(new_share), json=True, room=data['user_id'])
-
-
-@socketio.on('live_share')
-def live_share(data):
-    emit('live_share', data, json=True, room=data['user_id'])
 
 
 @socketio.on('update_share')

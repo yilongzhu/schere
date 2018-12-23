@@ -23,9 +23,6 @@ $(document).ready(() => {
     socket.on('deleted_share', post_id => {
         document.getElementById('shares').removeChild(document.getElementById(post_id))
     });
-    socket.on('live_share', json => {
-        document.getElementById(json.post_id).children[1].firstChild.value = json.body;
-    })
     $('form#user').submit(function(event) {
         socket.emit('user_login', $('#user_id').val());
         user_id = $('#user_id').val();
@@ -44,12 +41,6 @@ $(document).ready(() => {
         socket.emit('delete_share', {user_id: user_id, post_id: this.parentElement.parentElement.id});
         return false;
     });
- 
-    $('#shares').on('input', 'input', function(event) {
-        socket.emit('live_share', {user_id: user_id, post_id: this.parentElement.parentElement.id, body: this.value});
-        return false;
-    });
-
     $('#shares').on('change submit', 'input', function(event) {
         socket.emit('update_share', {user_id: user_id, post_id: this.parentElement.parentElement.id, body: this.value});
         return false;
